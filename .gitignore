@@ -165,10 +165,55 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
 
 # Ruff stuff:
 .ruff_cache/
 
 # PyPI configuration file
 .pypirc
+
+# CostWise AI specific
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+terraform.tfvars
+.terraform.lock.hcl
+crash.log
+backend.hcl
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Cloud Functions
+*.zip
+cloud_functions/archives/
+
+# Secrets
+*.pem
+*.key
+*.p12
+credentials.json
+service-account.json
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Temp files
+.tmp/
+tmp/
+temp/
+
+# Environment-specific configs
+.env.*
+env/
+*.secrets.yml
+*.secrets.yaml
+*secrets.json

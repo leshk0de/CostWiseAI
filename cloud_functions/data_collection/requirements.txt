@@ -1,0 +1,4 @@
+functions-framework==3.0.0
+google-cloud-bigquery==2.34.4
+google-cloud-secretmanager==2.12.4
+requests==2.28.1

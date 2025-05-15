@@ -1,0 +1,110 @@
+name: Deploy CostWise AI Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  terraform:
+    name: 'Terraform Deploy'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    permissions:
+      contents: read
+      id-token: write # Needed for GCP Workload Identity authentication
+    
+    defaults:
+      run:
+        working-directory: terraform/environments/${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.1.0'
+      
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        
+      - name: Generate backend.hcl
+        run: |
+          cat > backend.hcl << EOF
+          bucket = "${{ secrets.TF_STATE_BUCKET }}"
+          prefix = "terraform/state/costwise-ai/${{ github.event.inputs.environment || 'dev' }}"
+          EOF
+          
+      - name: Generate terraform.tfvars
+        run: |
+          cat > terraform.tfvars << EOF
+          # Environment Configuration
+          environment = "${{ github.event.inputs.environment || 'dev' }}"
+          resource_prefix = "costwise"
+          
+          # GCP Project Configuration
+          project_id = "${{ secrets.GCP_PROJECT_ID }}"
+          location = "${{ secrets.GCP_REGION }}"
+          
+          # Service Credentials
+          service_credentials = {
+            "Claude" = "${{ secrets.ANTHROPIC_API_KEY }}",
+            "OpenAI" = "${{ secrets.OPENAI_API_KEY }}",
+            "Perplexity" = "${{ secrets.PERPLEXITY_API_KEY }}"
+          }
+          
+          # Security Configuration
+          enable_vpc_connector = ${{ github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'staging' }}
+          vpc_connector_name = "${{ secrets.VPC_CONNECTOR }}"
+          allowed_ip_ranges = ${{ toJSON(fromJSON(secrets.ALLOWED_IP_RANGES)) }}
+          
+          # Monitoring Configuration
+          enable_monitoring = true
+          alert_notification_channels = ${{ toJSON(fromJSON(secrets.NOTIFICATION_CHANNELS)) }}
+          EOF
+      
+      - name: Terraform Init
+        run: terraform init -backend-config=backend.hcl
+      
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+      
+      - name: Terraform Validate
+        run: terraform validate
+        
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
+      
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+        
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve

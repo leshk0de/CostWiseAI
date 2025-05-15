@@ -1,0 +1,5 @@
+# CostWise AI Staging - Backend Configuration Example
+# Copy this file to backend.hcl and update with your values
+
+bucket  = "your-terraform-state-bucket-name"
+prefix  = "terraform/state/costwise-ai/staging"

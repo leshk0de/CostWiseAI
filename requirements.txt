@@ -1,0 +1,26 @@
+# Development requirements for CostWise AI
+
+# Google Cloud Libraries
+google-cloud-bigquery==2.34.4
+google-cloud-secretmanager==2.12.4
+google-cloud-storage==2.7.0
+google-cloud-functions==1.8.0
+
+# Cloud Functions Framework
+functions-framework==3.0.0
+
+# HTTP and API Libraries
+requests==2.28.1
+
+# Testing Libraries
+pytest==7.0.1
+pytest-mock==3.8.2
+
+# Development Tools
+black==22.6.0
+isort==5.10.1
+flake8==5.0.4
+mypy==0.971
+
+# Type Stubs
+types-requests==2.28.1

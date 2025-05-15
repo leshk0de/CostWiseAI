@@ -1,0 +1,98 @@
+[
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Timestamp when the API request was made"
+  },
+  {
+    "name": "service_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Name of the AI service (e.g., Claude, OpenAI, Perplexity)"
+  },
+  {
+    "name": "model",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Model used for the request (e.g., claude-3-opus-20240229, gpt-4)"
+  },
+  {
+    "name": "feature",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Feature or API endpoint used (e.g., chat, embeddings)"
+  },
+  {
+    "name": "request_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Unique identifier for the request"
+  },
+  {
+    "name": "input_tokens",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Number of input/prompt tokens"
+  },
+  {
+    "name": "output_tokens",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Number of output/completion tokens"
+  },
+  {
+    "name": "total_tokens",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Total number of tokens (input + output)"
+  },
+  {
+    "name": "input_cost",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Cost for input tokens in USD"
+  },
+  {
+    "name": "output_cost",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Cost for output tokens in USD"
+  },
+  {
+    "name": "cost",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Total cost in USD"
+  },
+  {
+    "name": "response_time_ms",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Response time in milliseconds"
+  },
+  {
+    "name": "project",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Project or team associated with the request"
+  },
+  {
+    "name": "user_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "User ID associated with the request"
+  },
+  {
+    "name": "raw_response",
+    "type": "JSON",
+    "mode": "NULLABLE",
+    "description": "Raw JSON response from the API for debugging"
+  },
+  {
+    "name": "metadata",
+    "type": "JSON",
+    "mode": "NULLABLE",
+    "description": "Additional metadata about the request"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "service_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Name of the AI service (e.g., Claude, OpenAI, Perplexity)"
+  },
+  {
+    "name": "service_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the service"
+  },
+  {
+    "name": "api_type",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Type of API (REST, GraphQL, gRPC, etc.)"
+  },
+  {
+    "name": "api_base_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Base URL for the API"
+  },
+  {
+    "name": "data_collection_endpoint",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Endpoint for collecting usage data"
+  },
+  {
+    "name": "secret_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Name of the Secret Manager secret containing API credentials"
+  },
+  {
+    "name": "models",
+    "type": "JSON",
+    "mode": "REQUIRED",
+    "description": "JSON object containing model pricing information"
+  },
+  {
+    "name": "adapter_module",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Python module name for the service adapter"
+  },
+  {
+    "name": "active",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "Whether this service is currently active for monitoring"
+  },
+  {
+    "name": "data_collection_frequency",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Cron expression for data collection frequency (overrides global setting)"
+  },
+  {
+    "name": "updated_at",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Timestamp when this configuration was last updated"
+  },
+  {
+    "name": "additional_config",
+    "type": "JSON",
+    "mode": "NULLABLE",
+    "description": "Additional service-specific configuration options"
+  }
+]
