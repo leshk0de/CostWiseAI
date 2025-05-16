@@ -36,6 +36,12 @@
     "description": "Name of the Secret Manager secret containing API credentials"
   },
   {
+    "name": "secret_project_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Project ID where the secret is stored (if different from the default project)"
+  },
+  {
     "name": "models",
     "type": "JSON",
     "mode": "REQUIRED",

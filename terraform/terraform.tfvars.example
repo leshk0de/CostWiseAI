@@ -1,25 +1,37 @@
-# Development Environment Configuration Example
+# CostWise AI - Configuration
 # Copy this file to terraform.tfvars and update the values
 
 # Environment Configuration
-environment     = "dev"         # Default value, can be omitted
-resource_prefix = "costwise"    # Default value, can be omitted
+environment     = "prod"      # Environment name - affects resource naming
+resource_prefix = "costwise"  # Prefix for all resources
 
 # GCP Project Configuration
 project_id = "your-project-id"  # Required
-location   = "us-central1"      # Default value, can be omitted
+location   = "us-central1"      # Default region for resources
 
 # Resource Naming - These will be auto-generated if not specified
-# dataset_id                = "your-custom-dataset-name"
-# service_account_id        = "your-custom-sa-name"
-# function_source_bucket_name = "your-custom-bucket-name"
+dataset_id                = "costwise_ai"
+cost_data_table_id        = "cost_data"
+service_config_table_id   = "service_config"
+service_account_id        = "sa-costwise-ai"
+service_account_name      = "CostWise AI Service Account"
+function_source_bucket_name = "costwise-function-source"
+
+# Data Configuration
+cost_data_retention_days  = 365  # How long to keep cost data
+
+# Schedule Configuration
+data_collection_schedule  = "0 */6 * * *"  # Every 6 hours
 
 # Service Credentials - Fill these in with your actual API keys
 service_credentials = {
-  "Claude"     = "your-anthropic-api-key",
-  "OpenAI"     = "your-openai-api-key",
-  "Perplexity" = "your-perplexity-api-key"
+  "anthropic"   = "sk-ant-api03-your-actual-key"
+  "openai"      = "sk-your-actual-key"
+  "perplexity"  = "pplx-your-actual-key"
 }
+
+# Service Names - List of services to monitor
+service_names = ["anthropic", "openai", "perplexity"]
 
 # API Configuration - Only specify if you need to override the defaults
 # api_config = {

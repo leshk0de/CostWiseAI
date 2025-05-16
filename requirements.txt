@@ -2,7 +2,7 @@
 
 # Google Cloud Libraries
 google-cloud-bigquery==2.34.4
-google-cloud-secretmanager==2.12.4
+google-cloud-secret-manager
 google-cloud-storage==2.7.0
 google-cloud-functions==1.8.0
 

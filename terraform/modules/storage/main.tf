@@ -4,9 +4,16 @@
  * This module creates the Google Cloud Storage resources needed for the CostWise AI system.
  */
 
+# Generate random pet name for bucket uniqueness
+resource "random_pet" "bucket_suffix" {
+  length    = 2
+  separator = "-"
+}
+
 # Create a bucket for Cloud Functions source code
 resource "google_storage_bucket" "function_source" {
-  name     = var.function_source_bucket_name
+  project  = var.project_id
+  name     = "${var.function_source_bucket_name}-${random_pet.bucket_suffix.id}"
   location = var.location
   
   uniform_bucket_level_access = true
@@ -25,10 +32,9 @@ resource "google_storage_bucket" "function_source" {
     }
   }
   
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 }
 
 # Grant access to the service account

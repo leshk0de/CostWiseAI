@@ -22,3 +22,15 @@ variable "data_collection_function_url" {
   description = "URL of the data collection Cloud Function"
   type        = string
 }
+
+variable "labels" {
+  description = "Labels for consistent module interface (not used - Cloud Scheduler doesn't support labels)"
+  type        = map(string)
+  default     = {}
+}
+
+variable "scheduler_job_name" {
+  description = "Name for the Cloud Scheduler job"
+  type        = string
+  default     = "costwise-ai-data-collection"
+}

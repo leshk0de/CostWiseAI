@@ -24,7 +24,8 @@ module "secret_manager" {
 
   project_id                  = var.project_id
   service_account_email       = module.iam.service_account_email
-  service_credentials         = var.service_credentials
+  service_credentials         = var.service_credentials != null ? var.service_credentials : {}
+  service_names               = var.service_names
   secret_name_prefix          = local.name_prefix
   labels                      = local.common_labels
 }
@@ -36,7 +37,14 @@ module "iam" {
   project_id                  = var.project_id
   service_account_id          = var.service_account_id != null ? var.service_account_id : local.names.service_account
   service_account_name        = var.service_account_name
+  region                      = var.location
   labels                      = local.common_labels
+  
+  # Set to the actual function name (use output after first apply)
+  cloud_run_service_name      = try(module.cloud_functions.data_collection_function_name, "")
+  
+  # Pass the BigQuery dataset ID to restrict permissions to this dataset only
+  bigquery_dataset_id         = module.bigquery.dataset_id
 }
 
 # Set up storage buckets for Cloud Functions code and other assets
@@ -65,6 +73,7 @@ module "cloud_functions" {
   # Security-related settings
   enable_vpc_connector        = var.enable_vpc_connector
   vpc_connector_name          = var.vpc_connector_name
+  vpc_connector_egress_settings = "PRIVATE_RANGES_ONLY"
   
   # API configuration
   api_config                  = var.api_config

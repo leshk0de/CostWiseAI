@@ -3,6 +3,11 @@ output "data_collection_function_url" {
   value       = google_cloudfunctions2_function.data_collection.service_config[0].uri
 }
 
+output "data_collection_function_name" {
+  description = "The name of the data collection Cloud Function"
+  value       = google_cloudfunctions2_function.data_collection.name
+}
+
 output "data_transformation_function_url" {
   description = "The URL of the data transformation Cloud Function"
   value       = google_cloudfunctions2_function.data_transformation.service_config[0].uri

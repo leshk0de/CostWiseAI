@@ -6,12 +6,16 @@
 
 # Create a scheduler job for regular data collection
 resource "google_cloud_scheduler_job" "data_collection" {
-  name             = "costwise-ai-data-collection"
+  project          = var.project_id
+  name             = var.scheduler_job_name
   description      = "Regularly collect AI service usage and cost data"
   schedule         = var.data_collection_schedule
   time_zone        = "UTC"
   attempt_deadline = "320s"
   region           = var.region
+  
+  # Note: Cloud Scheduler does not support labels directly
+  # We keep the labels variable for consistency across modules, but it's not used here
 
   http_target {
     http_method = "POST"
@@ -20,6 +24,10 @@ resource "google_cloud_scheduler_job" "data_collection" {
     oidc_token {
       service_account_email = var.service_account_email
       audience              = var.data_collection_function_url
+    }
+
+    headers = {
+      "Content-Type" = "application/json"
     }
   }
 

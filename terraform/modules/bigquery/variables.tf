@@ -27,3 +27,9 @@ variable "cost_data_retention_days" {
   description = "Number of days to retain cost data"
   type        = number
 }
+
+variable "labels" {
+  description = "Labels to apply to BigQuery resources"
+  type        = map(string)
+  default     = {}
+}

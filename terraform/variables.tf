@@ -93,6 +93,12 @@ variable "service_credentials" {
   default     = {}
 }
 
+variable "service_names" {
+  description = "List of service names to create secrets for (needed to handle the sensitive value in for_each)"
+  type        = list(string)
+  default     = ["anthropic", "openai", "perplexity"]
+}
+
 # API Configuration
 variable "api_config" {
   description = "Configuration for external APIs"

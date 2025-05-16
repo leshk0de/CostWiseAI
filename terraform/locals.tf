@@ -15,7 +15,7 @@ locals {
   # Resource name generator with consistent patterns
   names = {
     # BigQuery resources
-    dataset           = "${local.name_prefix}-ai-cost-monitoring"
+    dataset           = "${replace(local.name_prefix, "-", "_")}_ai_cost_monitoring"
     cost_data_table   = "usage_costs"
     config_table      = "service_configs"
     

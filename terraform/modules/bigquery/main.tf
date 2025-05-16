@@ -5,17 +5,22 @@
  */
 
 # Create a dataset for all AI cost monitoring data
+# Format dataset_id to ensure it contains only letters, numbers, or underscores
+locals {
+  formatted_dataset_id = replace(var.dataset_id, "-", "_")
+}
+
 resource "google_bigquery_dataset" "cost_monitoring" {
-  dataset_id                  = var.dataset_id
+  project                     = var.project_id
+  dataset_id                  = local.formatted_dataset_id
   friendly_name               = "AI Cost Monitoring"
   description                 = "Dataset for storing AI service usage and cost data"
   location                    = var.location
   default_table_expiration_ms = var.cost_data_retention_days * 24 * 60 * 60 * 1000
 
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 
   # Default access for dataset
   access {
@@ -36,6 +41,7 @@ resource "google_bigquery_dataset" "cost_monitoring" {
 
 # Create a table for detailed cost data with proper partitioning and clustering
 resource "google_bigquery_table" "cost_data" {
+  project   = var.project_id
   dataset_id = google_bigquery_dataset.cost_monitoring.dataset_id
   table_id   = var.cost_data_table_id
   
@@ -51,28 +57,28 @@ resource "google_bigquery_table" "cost_data" {
   clustering = ["service_name", "model"]
 
   description = "AI service usage and cost data with daily partitioning"
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 }
 
 # Create a table for service configurations
 resource "google_bigquery_table" "service_config" {
+  project   = var.project_id
   dataset_id = google_bigquery_dataset.cost_monitoring.dataset_id
   table_id   = var.service_config_table_id
 
   schema = file("${path.module}/schemas/service_config_schema.json")
 
   description = "Configuration data for AI services being monitored"
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 }
 
 # Create a view for simplified cost analysis
 resource "google_bigquery_table" "cost_summary_view" {
+  project   = var.project_id
   dataset_id = google_bigquery_dataset.cost_monitoring.dataset_id
   table_id   = "cost_summary_view"
   view {
@@ -99,14 +105,14 @@ SQL
   }
 
   description = "Summarized daily cost data by service and model"
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 }
 
 # Create a view for model comparison
 resource "google_bigquery_table" "model_comparison_view" {
+  project   = var.project_id
   dataset_id = google_bigquery_dataset.cost_monitoring.dataset_id
   table_id   = "model_comparison_view"
   view {
@@ -134,10 +140,9 @@ SQL
   }
 
   description = "Comparison of different AI models by cost efficiency"
-  labels = {
-    environment = "production"
+  labels = merge({
     application = "costwise-ai"
-  }
+  }, var.labels)
 }
 
 # Create directories for schema files

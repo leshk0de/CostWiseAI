@@ -202,15 +202,15 @@ zip -r ../function_source.zip .
 
 2. Upload to your Cloud Storage bucket:
 ```bash
-gsutil cp ../function_source.zip gs://your-costwise-ai-functions/source/
+gsutil cp ../function_source.zip gs://YOUR_BUCKET/source/
 ```
 
 3. Update the Cloud Functions to use the new code:
 ```bash
-gcloud functions deploy costwise-ai-data-collection \
+gcloud functions deploy your-data-collection-function \
     --gen2 \
-    --region=us-central1 \
-    --source=gs://your-costwise-ai-functions/source/function_source.zip \
+    --region=REGION \
+    --source=gs://YOUR_BUCKET/source/function_source.zip \
     --entry-point=collect_data \
     --runtime=python39
 ```
@@ -222,7 +222,7 @@ Repeat for the other functions as needed.
 Store your service's API key securely in Secret Manager:
 
 ```bash
-echo -n "your-api-key" | gcloud secrets create costwise-ai-yourservice-api-key \
+echo -n "your-api-key" | gcloud secrets create your-service-api-key-secret \
     --replication-policy="automatic" \
     --data-file=-
 ```
@@ -232,8 +232,9 @@ echo -n "your-api-key" | gcloud secrets create costwise-ai-yourservice-api-key \
 Use the admin Cloud Function to add your service configuration:
 
 ```bash
-curl -X POST https://your-admin-function-url \
+curl -X POST https://REGION-PROJECT_ID.cloudfunctions.net/admin_handler \
      -H "Content-Type: application/json" \
+     -H "Authorization: bearer $(gcloud auth print-identity-token)" \
      -d '{
            "action": "add_service",
            "service_name": "YourService",
@@ -241,15 +242,17 @@ curl -X POST https://your-admin-function-url \
            "api_type": "REST",
            "api_base_url": "https://api.yourservice.com/v1",
            "data_collection_endpoint": "usage",
-           "secret_name": "costwise-ai-yourservice-api-key",
+           "secret_name": "your-service-api-key-secret",
            "models": {
              "model-name-1": {
                "input_price_per_1k": 5.0,
-               "output_price_per_1k": 15.0
+               "output_price_per_1k": 15.0,
+               "description": "Description of model 1"
              },
              "model-name-2": {
                "input_price_per_1k": 1.0,
-               "output_price_per_1k": 3.0
+               "output_price_per_1k": 3.0,
+               "description": "Description of model 2"
              }
            },
            "adapter_module": "your_service_adapter",
@@ -259,6 +262,8 @@ curl -X POST https://your-admin-function-url \
            }
          }'
 ```
+
+> For detailed, real-world examples of service configurations for popular AI providers like OpenAI, Claude, and others, see the [Service Configuration Examples](service_examples.md) document.
 
 Adjust the values to match your service's actual configuration:
 - `service_name`: The display name for your service
@@ -274,19 +279,20 @@ Adjust the values to match your service's actual configuration:
 1. Trigger a manual data collection:
 
 ```bash
-curl -X POST https://your-data-collection-function-url
+curl -X POST https://REGION-PROJECT_ID.cloudfunctions.net/collect_data \
+  -H "Authorization: bearer $(gcloud auth print-identity-token)"
 ```
 
 2. Check the Cloud Function logs for any errors:
 
 ```bash
-gcloud logging read "resource.type=cloud_function AND resource.labels.function_name=costwise-ai-data-collection" --limit 50
+gcloud logging read "resource.type=cloud_function AND resource.labels.function_name=your-data-collection-function" --limit 50
 ```
 
 3. Verify data is appearing in BigQuery:
 
 ```bash
-bq query --nouse_legacy_sql 'SELECT * FROM `your-project.ai_cost_monitoring.usage_costs` WHERE service_name = "YourService" LIMIT 10'
+bq query --nouse_legacy_sql 'SELECT * FROM `PROJECT_ID.DATASET_ID.COST_DATA_TABLE` WHERE service_name = "YourService" LIMIT 10'
 ```
 
 ## Common Integration Issues

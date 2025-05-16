@@ -1,19 +1,12 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_BIGQUERY",
-      "label": "BigQuery",
-      "description": "BigQuery data source for CostWise AI",
-      "type": "datasource",
-      "pluginId": "grafana-bigquery-datasource",
-      "pluginName": "BigQuery"
-    }
-  ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -23,20 +16,22 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 1,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Total AI costs across all services for the selected time period",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -44,10 +39,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 500
               },
               {
                 "color": "red",
@@ -78,23 +69,29 @@
           "fields": "",
           "values": false
         },
-        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Total AI Costs (30 Days)",
       "type": "stat"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Total token usage across all AI services",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -110,7 +107,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -133,23 +130,29 @@
           "fields": "",
           "values": false
         },
-        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  SUM(total_tokens) as total_tokens\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  SUM(total_tokens) as total_tokens\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Total Tokens (30 Days)",
       "type": "stat"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Number of API requests across all AI services",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -165,7 +168,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -183,52 +186,61 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "count"
+            "sum"
           ],
           "fields": "",
           "values": false
         },
-        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  request_id\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  COUNT(*) as request_count\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Total API Requests (30 Days)",
       "type": "stat"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Costs by service over time",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 20,
+            "fillOpacity": 10,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -254,7 +266,7 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 24,
+        "w": 12,
         "x": 0,
         "y": 6
       },
@@ -262,30 +274,38 @@
       "options": {
         "legend": {
           "calcs": [
-            "sum",
-            "mean"
+            "sum"
           ],
-          "displayMode": "table",
-          "placement": "right"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  DATE(timestamp) as date,\n  service_name,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  date, service_name\nORDER BY\n  date",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  DATE(timestamp) as date,\n  service_name,\n  SUM(cost) as daily_cost\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  date, service_name\nORDER BY\n  date",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Daily Costs by Service",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Costs broken down by service",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -298,29 +318,29 @@
               "viz": false
             }
           },
-          "mappings": [],
-          "unit": "currencyUSD"
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 12,
-        "x": 0,
-        "y": 15
+        "x": 12,
+        "y": 6
       },
       "id": 5,
       "options": {
         "displayLabels": [
-          "name",
-          "percent"
+          "percent",
+          "name"
         ],
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "right",
+          "showLegend": true,
           "values": [
-            "value",
-            "percent"
+            "percent",
+            "value"
           ]
         },
         "pieType": "pie",
@@ -331,22 +351,32 @@
           "fields": "",
           "values": false
         },
-        "text": {}
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  service_name,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  service_name\nORDER BY\n  total_cost DESC",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  service_name,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  service_name\nORDER BY\n  total_cost DESC",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Costs by Service",
       "type": "piechart"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Costs broken down by AI model",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -359,29 +389,29 @@
               "viz": false
             }
           },
-          "mappings": [],
-          "unit": "currencyUSD"
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 15
       },
       "id": 6,
       "options": {
         "displayLabels": [
-          "name",
-          "percent"
+          "percent",
+          "name"
         ],
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "right",
+          "showLegend": true,
           "values": [
-            "value",
-            "percent"
+            "percent",
+            "value"
           ]
         },
         "pieType": "pie",
@@ -392,22 +422,32 @@
           "fields": "",
           "values": false
         },
-        "text": {}
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  model,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  model\nORDER BY\n  total_cost DESC",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  model,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  model\nORDER BY\n  total_cost DESC",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Costs by Model",
       "type": "piechart"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Cost efficiency of each model (cost per 1k tokens)",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -415,7 +455,10 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -424,14 +467,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 15
               }
             ]
           }
@@ -443,10 +478,6 @@
               "options": "cost_per_1k_tokens"
             },
             "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "gradient-gauge"
-              },
               {
                 "id": "unit",
                 "value": "currencyUSD"
@@ -468,7 +499,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "avg_response_time_ms"
+              "options": "avg_response_time"
             },
             "properties": [
               {
@@ -480,13 +511,22 @@
         ]
       },
       "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 26
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 15
       },
       "id": 7,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -495,29 +535,37 @@
           }
         ]
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  service_name,\n  model,\n  COUNT(*) as request_count,\n  SUM(input_tokens) as total_input_tokens,\n  SUM(output_tokens) as total_output_tokens,\n  SUM(total_tokens) as total_tokens,\n  SUM(cost) as total_cost,\n  SUM(cost) / SUM(total_tokens) * 1000 as cost_per_1k_tokens,\n  AVG(response_time_ms) as avg_response_time_ms\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)\nGROUP BY\n  service_name, model\nORDER BY\n  cost_per_1k_tokens ASC",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  service_name,\n  model,\n  COUNT(*) as request_count,\n  SUM(cost) as total_cost,\n  ROUND(SUM(cost) / SUM(total_tokens) * 1000, 4) as cost_per_1k_tokens,\n  ROUND(AVG(response_time_ms), 2) as avg_response_time\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  service_name, model\nORDER BY\n  cost_per_1k_tokens ASC",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Model Efficiency Comparison",
       "type": "table"
     },
     {
-      "datasource": "${DS_BIGQUERY}",
-      "description": "Usage broken down by project/team",
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMin": 0,
             "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
@@ -528,6 +576,9 @@
             "lineWidth": 0,
             "scaleDistribution": {
               "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -545,52 +596,53 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 8,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 24
       },
       "id": 8,
       "options": {
-        "barWidth": 0.5,
+        "barRadius": 0,
+        "barWidth": 0.97,
         "groupWidth": 0.7,
         "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "table",
-          "placement": "right"
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
         "orientation": "auto",
         "showValue": "auto",
-        "stacking": "normal",
-        "text": {
-          "valueSize": 12
-        },
+        "stacking": "none",
         "tooltip": {
-          "mode": "single"
-        }
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": -90,
+        "xTickLabelSpacing": 0
       },
-      "pluginVersion": "7.5.7",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
-          "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(project, 'Unknown') as project,\n  service_name,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.${cost_data_table_id}`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  project, service_name\nORDER BY\n  total_cost DESC",
-          "refId": "A"
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "queryType": "SQL",
+          "rawSql": "SELECT\n  COALESCE(project, 'Unassigned') as project_name,\n  SUM(cost) as total_cost\nFROM\n  `${project_id}.${dataset_id}.usage_costs`\nWHERE\n  timestamp BETWEEN TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY) AND CURRENT_TIMESTAMP()\nGROUP BY\n  project_name\nORDER BY\n  total_cost DESC\nLIMIT 15",
+          "refId": "A",
+          "hide": false
         }
       ],
       "title": "Costs by Project/Team",
       "type": "barchart"
     }
   ],
-  "refresh": "5m",
-  "schemaVersion": 27,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "dark",
-  "tags": [
-    "ai",
-    "costs",
-    "monitoring"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
@@ -599,18 +651,13 @@
           "text": "your-project-id",
           "value": "your-project-id"
         },
-        "description": "Google Cloud Project ID",
-        "error": null,
+        "description": "GCP Project ID",
         "hide": 0,
+        "includeAll": false,
         "label": "Project ID",
+        "multi": false,
         "name": "project_id",
-        "options": [
-          {
-            "selected": true,
-            "text": "your-project-id",
-            "value": "your-project-id"
-          }
-        ],
+        "options": [],
         "query": "your-project-id",
         "skipUrlSync": false,
         "type": "textbox"
@@ -618,44 +665,17 @@
       {
         "current": {
           "selected": false,
-          "text": "ai_cost_monitoring",
-          "value": "ai_cost_monitoring"
+          "text": "costwise_ai_dev",
+          "value": "costwise_ai_dev"
         },
         "description": "BigQuery Dataset ID",
-        "error": null,
         "hide": 0,
+        "includeAll": false,
         "label": "Dataset ID",
+        "multi": false,
         "name": "dataset_id",
-        "options": [
-          {
-            "selected": true,
-            "text": "ai_cost_monitoring",
-            "value": "ai_cost_monitoring"
-          }
-        ],
-        "query": "ai_cost_monitoring",
-        "skipUrlSync": false,
-        "type": "textbox"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "usage_costs",
-          "value": "usage_costs"
-        },
-        "description": "Cost Data Table ID",
-        "error": null,
-        "hide": 0,
-        "label": "Cost Table ID",
-        "name": "cost_data_table_id",
-        "options": [
-          {
-            "selected": true,
-            "text": "usage_costs",
-            "value": "usage_costs"
-          }
-        ],
-        "query": "usage_costs",
+        "options": [],
+        "query": "costwise_ai_dev",
         "skipUrlSync": false,
         "type": "textbox"
       }
@@ -665,18 +685,10 @@
     "from": "now-30d",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "",
   "title": "CostWise AI - Cost Overview",
-  "uid": "costwise-overview",
-  "version": 1
+  "uid": "costwise-ai-overview",
+  "version": 1,
+  "weekStart": ""
 }

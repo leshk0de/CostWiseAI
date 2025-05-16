@@ -15,6 +15,16 @@ variable "service_credentials" {
   default     = {}
 }
 
+# Making service_names optional allows for fully dynamic secrets
+# If service_names is provided, it acts as a superset of names to create
+# If not provided, secrets are only created for keys in service_credentials
+
+variable "service_names" {
+  description = "List of service names to create secrets for (used to work around sensitive value for_each issue)"
+  type        = list(string)
+  default     = []  
+}
+
 variable "secret_name_prefix" {
   description = "Prefix to apply to secret names"
   type        = string

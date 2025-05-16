@@ -119,6 +119,31 @@ curl -X POST https://your-admin-function-url \
 
 For more advanced visualization, set up Grafana with the BigQuery data source and import the included dashboard JSONs from the `grafana` directory.
 
+### Grafana Dashboard Setup
+
+1. **Install and Configure Grafana**:
+   - Set up a Grafana instance (cloud-hosted or self-hosted)
+   - Configure the BigQuery data source in Grafana
+   - Ensure your Grafana instance has permissions to query the BigQuery dataset
+
+2. **Import the Dashboard**:
+   - In Grafana, navigate to Dashboards > Import
+   - Either upload the JSON file from the `grafana/cost_overview_dashboard.json` or copy-paste its contents
+   - Configure the BigQuery data source for the dashboard during import
+   - Adjust dashboard variables if necessary to match your project and dataset IDs
+
+3. **Dashboard Features**:
+   - Total costs and usage metrics
+   - Cost breakdown by service, model, and project/team
+   - Model efficiency comparison
+   - Time-based trends of AI service usage
+   - Filterable by date range and service type
+
+4. **Customization**:
+   - The dashboard is fully customizable to your specific needs
+   - You can add additional panels or modify existing ones
+   - Consider adding alerts for cost thresholds to proactively monitor spending
+
 ## Development
 
 ### Project Structure

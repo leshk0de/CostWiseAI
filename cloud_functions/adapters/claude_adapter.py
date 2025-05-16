@@ -7,6 +7,9 @@ import requests
 import time
 from datetime import datetime, timedelta
 import logging
+
+# Get a logger specific to this adapter
+logger = logging.getLogger('costwise-data-collection')
 from typing import Dict, List, Any, Optional
 
 from .base_adapter import BaseServiceAdapter
@@ -96,7 +99,10 @@ class ClaudeAdapter(BaseServiceAdapter):
             return result
             
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error collecting data from Claude API: {e}")
+            logger.error(f"Error collecting data from Claude API: {e}", extra={
+                "error": str(e),
+                "error_type": type(e).__name__
+            })
             raise
     
     def calculate_cost(self, model: str, input_tokens: int, output_tokens: int) -> Dict[str, float]:

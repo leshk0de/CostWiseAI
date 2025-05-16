@@ -17,3 +17,9 @@ variable "function_service_account" {
   description = "Email of the service account that needs access to the bucket"
   type        = string
 }
+
+variable "labels" {
+  description = "Labels to apply to storage resources"
+  type        = map(string)
+  default     = {}
+}
